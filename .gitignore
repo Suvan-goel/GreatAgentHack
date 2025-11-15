@@ -1,0 +1,38 @@
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+env/
+venv/
+.venv/
+ENV/
+
+# Environment variables
+.env
+*.env
+
+# Build artefacts
+build/
+dist/
+*.egg-info/
+
+# Logs
+*.log
+
+# IDEs
+.vscode/
+.idea/
+*.iml
+
+# OS files
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Notebooks
+.ipynb_checkpoints/
+
+# Downloads or large local folders
+downloads/
