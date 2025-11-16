@@ -10,7 +10,7 @@ GroupSync is an **agentic copilot for student group projects**. It:
 - Runs a **Tension Radar** to detect overload, disengagement, and conflict
 - Generates a weekly **Supervisor Report** with concrete suggestions and a neutral message you can paste into the group chat
 
-This MVP is designed for a **single project** in memory, with no database, so it is easy to run in a hackathon or demo environment.
+This MVP is designed for a **single project** in memory, with no database.
 
 ---
 

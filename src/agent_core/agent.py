@@ -1,8 +1,17 @@
-import asyncio
 import os
 from dotenv import load_dotenv
-from holistic_ai_bedrock import HolisticAIBedrockChat, get_chat_model
+from agent_core.holistic_ai_bedrock import get_chat_model
 from langchain.agents import create_agent
+from agent_core.tools import (
+    get_state,
+    set_state,
+    list_uploaded_files,
+    load_document_to_memory,
+    get_document_from_memory,
+    save_document_to_memory,
+    ask_user
+)
+from agent_core.models import ProjectOutputModel
 
 
 load_dotenv()
@@ -13,34 +22,49 @@ HOLISTIC_AI_KEY = os.getenv("HOLISTIC_AI_API_TOKEN")
 os.environ["USER_AGENT"] = "my-langchain-agent/1.0"
 
 system_prompt = """
-You are the project Supervisor Agent.
-Your responsibilities:
+You are the Project Supervisor Agent.
 
-1. If project_state is empty, parse assignment brief, create tasks and use ask_user tool to ask the user about their skills and preferences, allocate tasks, and store it via set_state tool.
-2. If project_state exists, compare current progress with expected timeline.
-3. If deviation detected, call corrective_action tool.
-4. You MUST either call a tool or return 'NO_ACTION'
+Your autonomous loop:
 
-You operate autonomously and maintain a persistent project state.
+1. Call get_state to load project_state.
+2. If project_state is empty:
+   - Call list_uploaded_files to detect assignment files.
+   - For each file: call load_document_to_memory.
+   - After loading: call get_document_from_memory to retrieve text.
+   - Parse assignment brief from retrieved document.
+   - Extract tasks, deliverables, and deadlines.
+   - Call ask_user to obtain team preferences.
+   - Allocate tasks based on preferences.
+   - Call set_state to persist the full project plan.
+
+3. If project_state exists:
+   - Compare actual vs expected progress.
+   - If deviation detected: call corrective_action.
+   - If no corrective action needed: return "NO_ACTION".
+
+Rules:
+- You MUST call a tool or return "NO_ACTION".
+- Never assume project_state; always retrieve it via get_state.
+- Always write updated project_state using set_state.
 """
 
-async def main():
-    tools = []
+def build_agent():
     llm = get_chat_model("claude-3-5-sonnet")
+
+    tools = [
+        get_state,
+        set_state,
+        list_uploaded_files,
+        load_document_to_memory,
+        get_document_from_memory,
+        save_document_to_memory,
+        ask_user
+    ]
 
     agent = create_agent(
         model=llm,
         tools=tools,
+        response_format=ProjectOutputModel,
         system_prompt=system_prompt
     )
-
-    result = agent.invoke({
-        "messages": [
-            {"role": "user", "content": "read my assignement file"}
-        ]
-    })
-
-    print(result)
-
-if __name__ == "__main__":
-    asyncio.run(main())
+    return agent
