@@ -158,25 +158,7 @@ def ask_user(message: str):
     """
     return input(message)
 
-# @tool
-# def ask_user(message: str) -> dict:
-#     """
-#     Request input from the user through the UI (FastAPI).
-#     This does NOT block.
 #
-#     Stores the prompt in memory and returns a "waiting" status.
-#     """
-#     # Save the pending question
-#     store.put(
-#         namespace,
-#         "pending_prompt",
-#         {"message": message, "answered": False, "response": None}
-#     )
-#
-#     return {
-#         "status": "WAITING_FOR_USER",
-#         "message_to_user": message
-#     }
 
 @tool
 def micro_action():
