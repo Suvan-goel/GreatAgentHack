@@ -147,36 +147,36 @@ def save_document_to_memory(file_name: str, content: str) -> str:
     store.put(namespace, file_name, {"content": content})
     return "DOCUMENT_SAVED"
 
-# @tool
-# def ask_user(message: str):
-#     """
-#     prompts the user to ask for a specific input
-#     args:
-#         message (str): message to prompt the user
-#     return:
-#         user_input (str): user input
-#     """
-#     return input(message)
-
 @tool
-def ask_user(message: str) -> dict:
+def ask_user(message: str):
     """
-    Request input from the user through the UI (FastAPI).
-    This does NOT block.
-
-    Stores the prompt in memory and returns a "waiting" status.
+    prompts the user to ask for a specific input
+    args:
+        message (str): message to prompt the user
+    return:
+        user_input (str): user input
     """
-    # Save the pending question
-    store.put(
-        namespace,
-        "pending_prompt",
-        {"message": message, "answered": False, "response": None}
-    )
+    return input(message)
 
-    return {
-        "status": "WAITING_FOR_USER",
-        "message_to_user": message
-    }
+# @tool
+# def ask_user(message: str) -> dict:
+#     """
+#     Request input from the user through the UI (FastAPI).
+#     This does NOT block.
+#
+#     Stores the prompt in memory and returns a "waiting" status.
+#     """
+#     # Save the pending question
+#     store.put(
+#         namespace,
+#         "pending_prompt",
+#         {"message": message, "answered": False, "response": None}
+#     )
+#
+#     return {
+#         "status": "WAITING_FOR_USER",
+#         "message_to_user": message
+#     }
 
 @tool
 def micro_action():
